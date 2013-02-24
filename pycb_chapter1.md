@@ -130,3 +130,56 @@ join也不会产生大量的中间结果，是一种快速、整洁、优雅的�
 
 或者一行解决：`revwords = ' '.join(astring.split()[::-1])`  
 
+1.8 检查字符串中是否包含某字符集合中的字符
+-----------------------------------------
+检查字符串中是否出现某字符集合中的字符，最简单的方法如下：
+
+    def containAny(seq, aset):
+        for c in seq:
+            if c in aset：
+                return True
+        return False
+循环检查seq每一个子项，只要找到一个属于aset即可返回True.  
+
+set有一个difference的方法：任何一个set对象a，a.difference(b)返回a中所有不属于b的元素，即a-b。比如：
+
+    L1 = [1, 2, 3, 3]
+    L2 = [1, 2, 3, 4]
+    set(L1).difference(L2)
+    output:set([])
+    set(L2).difference(L1)
+    output:set([4])
+
+1.9 简化字符串的translate方法的使用
+----------------------------------
+用字符串的translate方法进行快速编码，但却发现很难记住这个方法和string.maketrans函数的应用细节，所以需要进行简单的封装。  
+
+    import string
+    def translator(frm='', to='', delete='', keep=None):
+        if len(to) == 1:
+            to = to * len(frm)
+        trans = string.maketrans(frm, to)
+        if keep is not None:
+            allchars = string.maktrans('', '')
+            delete = allchars.translate(allchars, keep.translate(allchars, delete))
+        def translate(s):
+            return s.translate(trans, delete)
+        return translate
+
+### 闭包
+
+    def make_adder(addend):
+        def adder(augend):return augend+addend
+        return adder
+
+    p = make_adder(23)
+    q = make_adder(42)
+    print p(100), q(100)
+    output:123 142
+
+闭包的奥秘，其实就是一个“根据不同配置信息得到不同结果”的功能。  
+关于这一小节，可以参考[这里](http://blackgu.blogbus.com/logs/171867049.html)
+
+1.10 过滤字符串中不属于指定集合的字符：
+--------------------------------------
+
