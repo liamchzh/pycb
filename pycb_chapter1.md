@@ -182,4 +182,41 @@ set有一个difference的方法：任何一个set对象a，a.difference(b)返回
 
 1.10 过滤字符串中不属于指定集合的字符：
 --------------------------------------
+给定一个需要保留的字符的集合，构建一个过滤函数。  
+使用string对象的translate方法。因为translate的第二个参数是需要删除的字符，所以需要为该字符集合准备一个补集。  
+
+    import string
+    allchars = string.maktrans('', '') #无需映射
+    def makefilter(keep):
+        delchars = allchars.translate(allchars, keep)
+        # 删除掉要keep的，就是要删除的字符集，即keep的补集。
+        def thefilter(s):
+            return s.translate(allchars, delchars)
+        return thefilter
+    
+    if __name__ == '__main__':
+        just_vowels = makefilter('aeiou')
+        print just_vowels('abcdefghi')
+
+关于maketrans和translate的使用请看[这里](http://hi.baidu.com/whlcshit/item/009fc9fc9f70b1733d198b8f)  
+
+1.11 检查一个字符串是文本还是二进制
+-----------------------------------
+采用Perl的判定方法，如果字符串包含了空值或者其中30%的字符编码大于126或者是奇怪的控制码，就认为是二进制数据。  
+
+    from __future__ import division
+    import string
+    text_characters = "".join(map(chr, range(32, 127))) + "\n\r\t\b"
+    _null_trans = string.maketrans("", "")
+    def istext(s, text_characters = text_characters, threshold = 0.30)
+        s包含空值，就不是文本
+        if "\0" in s:
+            return Flase
+        # 空字符串是文本
+        if not s:
+            return True
+        t = s.translate(_null_trans, text_characters) # 删掉字符，剩余就是非字符
+        return len(t)/len(s) <= threshold # 非字符的比例小于30%，即文本
+
+这里继续是maketrans和translate的使用。
 
