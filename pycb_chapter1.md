@@ -325,4 +325,63 @@ set有一个difference的方法：任何一个set对象a，a.difference(b)返回
 ### 讨论
 如何处理制表符和空格混合的字符串？
 
+1.16 & 1.17 替换字符串中的子串  
+------------------------------
+有一个string.Template类，可以完成任务。然后为substitute提供字典参数。
+
+    import string
+    new_style = string.Template("this is $thing")
+    print new_style.substitute({'thing':5}) # output:this is 5
+    print new_style.substitite({'thing':'test'}) # output:this is test
+    print new_style.substitute(thing=5) # output:this is 5
+    print new_style.substitute(thing='test') # output:this is test
+
+再看一个例子：
+
+    msg = string.Template("the square of $number is $square")
+    for i in range(10):
+        print msg.substitute(number=i, square=i*i)
+
+1.8 一次完成多个替换
+--------------------
+re（正则）提供了强大的sub方法，高效地进行匹配替换。
+
+    import re
+    def multiple_replace(text, adict):
+        rx = re.compile('|'.join(map(re.escape, adict)))
+        def one_xlat(match):
+            return adict[match.group(0)]
+        return rx.sub(one_xlat, text)
+
+首先，rx把需要替换的字符从adict提取出来，变成a1|a2|...|aN的形式。然后，不直接给re.sub传递用于替换的字符串，而是传入回调函数参数。  
+如果只使用同一个固定不变的翻译表来完成很多文本的替换，这种情况也许希望只做一次准备工作，出于这种需求，也许会使用以下基于闭包的方式：
+
+    import re
+    def make_xlat(args, **kwds): # args应该为*args，下同
+        adict = dict(args, **kwds)
+        rx = re.compile('|'.join(map(re.escape, adict)))
+        def one_xlat(match):
+            return adict[match.group(0)]
+        def xlat(text):
+            return rx.sub(one_xlat, text)
+        return xlat
+
+替换通常是单词的替换。通过特殊的r'\b'序列，正则表达式可以很好地找到单词开始和结束的位置。只需修改rx的部分，从而可以完成一些自定义的任务：
+
+    rx = re.compile(r'\b%s\b' % r'\b|\b'.join(map(re.escape, adict)))
+
+其余代码和前面给出的一样。但是，如果有大量的这样自定义的工作，代码就会大量地重复。所以，最好将其变成一个类：
+
+    class make_xlat:
+        def __init__(self, args, **kwds): # args应该为*args，下同
+            self.adict = dict(args, **kwds)
+            self.rx = self.make_rx()
+        def make_rx(self):
+            return re.compile('|'.join(map(re.escape, adict)))
+        def one_xlat(self, match):
+            return self.adict[match.group(0)]
+        def __call__(self, text):
+            return self.rx.sub(self.one_xlat, text)
+
+这样就能通过修改make_rx()来实现重载。
 
