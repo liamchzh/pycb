@@ -279,4 +279,50 @@ set有一个difference的方法：任何一个set对象a，a.difference(b)返回
 
     list_of_fields = list(split_by(the_line, 5))
 
+1.14 改变多行文本字符串的缩进
+-----------------------------
+在每行行首添加或删除一些空格，以保证每行的缩进都是指定数目的空格数。  
+
+    def reindent(s, numSpaces):
+        leading_space = numSpaces * ' '
+        lines = [leading_space + line.strip() for line in s.plitlines()]
+        return '\n'.join(lines)
+
+如果不想改变现有的缩进：
+
+    def addSpaces(s, numAdd):
+        white = numAdd * ''
+        return white + white.join(s.splitlines(True))
+    def numSpaces(s):
+        return [len(line)-len(line.lstrip()) for line in s.splitlines()]
+    def delSapces(s, numDel):
+        if numDel > min(numSpaces(s))
+            raise ValueError, "Error!"
+        return '\n'.join([line[numDel:] for line in s.splitlines()])
+
+1.15 扩展和压缩制表符
+--------------------
+将字符串中的制表符转化成一定数目的空格，或反其道而行。  
+
+1. 将制表符转为一定数目的空格：  
+`mystring = mystring.expandtabs()` #默认制表符的宽度为8
+
+2. 将空格转为制表符：  
+
+    def unexpand(astring, tablen=8):
+        import re
+        pieces = re.split(r'( +)', astring.expandtabs(tablen))
+        lensofar = 0
+        for i, piece in enumerate(pieces):
+            thislen = len(piece)
+            lensofar += thislen
+            if piece.isspace():
+                numblanks = lensofar % tablen
+                numtabs = (thislen-numblanks+tablen-1)/tablen
+                pieces[i] = '\t' * numtabs + ' ' * numblanks
+            return ''.join(pieces)
+
+### 讨论
+如何处理制表符和空格混合的字符串？
+
 
