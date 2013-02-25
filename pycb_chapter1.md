@@ -218,5 +218,65 @@ set有一个difference的方法：任何一个set对象a，a.difference(b)返回
         t = s.translate(_null_trans, text_characters) # 删掉字符，剩余就是非字符
         return len(t)/len(s) <= threshold # 非字符的比例小于30%，即文本
 
-这里继续是maketrans和translate的使用。
+这小节继续是maketrans和translate的使用。  
+
+1.12 控制大小写
+---------------
+字符串对象有upper和lower的方法，不需要参数，直接返回一个字符串的拷贝：`little.upper()`和`big.lower`  
+而`capitalize()`和`title()`分别是第一个字符改成大写，其余转成小写和每一个单词首字母大写，其余字母小写。  
+
+另外，python中还可以检查一个字符串是否已经满足需求的形式，比如isupper,islower,istitle。但是没有iscapitalized，下面给出一个严格的判断iscapitalized的代码：
+
+    import string
+    notrans = string.maketrans("", "")
+    def containsAny(str, strset):
+        return len(strset) != len(strset.translate(notrans, str))
+        # 检查是否包含字母
+    def iscapilized(s):
+        return s == s.capitalize() and containsAny(s, string.letters)
+
+1.13 访问子字符串
+-----------------
+切片是个好方法，但是它只能取得一个字段。如果考虑字段的长度，struct.unpack会更合适。  
+将字符串拆分成固定长度，可以利用带列表推导（LC）的切片方法：
+    
+    fiver = [theline[k:k+5] for k in xrange(0, len(theline), 5)]
+
+如果想把数据切成指定长度的列，用带LC的方法是最简单的：
+
+    cuts = [8, 14, 20, 26]
+    pieces = [theline[i:j] for i, j in zip([0]+cuts, cuts+[None])]
+    # zip将会把两个序列按照索引的顺序组成新的tuple
+    # zip([0]+cuts, cuts+[None])输出如下：
+    # [(0, 8), (8, 14), (14, 20), (20, 26), (26, None)]
+
+以上两个方法封装成函数：
+
+    def split_by(theline, n, lastfield=False):
+        pieces = [theline[k:k+n] for k in xrange(0, len(theline), n)]
+        if not lastfield and len(pieces[-1]) < n:
+            pieces.pop()
+        return pieces
+
+    def split_at(theline, cuts, lastfield=False):
+        pieces = [theline[i:j] for i, j in zip([0]+cuts, cuts+[None])]
+        if not lastfield:
+            pieces.pop()
+        return pieces
+
+用生成器可以实现一个完全不同的方式：
+
+    def split_at(the_line, cuts, lastfield=False):
+        last = 0
+        for cut in cuts:
+            yield the_line[last:cut]
+            last = cut
+        if lastfield:
+            yield the_line[last:]
+
+    def split_by(the_line, n, lastfield=False):
+        return split_at(the_line, xrange(0, len(the_line), n), lastfield)
+
+    list_of_fields = list(split_by(the_line, 5))
+
 
