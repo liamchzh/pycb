@@ -97,7 +97,7 @@ Unicode的转化：
 关于strip的用法：
 
     str.strip('x')
-    'yxxy hejyx y'
+    'yxxy hejyx yy'
     str.strip('y')
     'xyxxy hejyx yxx'
 
@@ -426,7 +426,7 @@ unicode字符串和未声明编码的字节串的操作，python会拒绝猜测�
 
 1.21 在Unicode和普通字符串之间转换
 ----------------------------------
-使用encode和decode：
+使用encode和decode：encode是从unicode到各种编码，decode是从各种编码解码到unicode。
 
     unicodestring = u"hello world"
     # unicode转化成普通字符串
