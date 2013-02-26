@@ -385,3 +385,65 @@ re（正则）提供了强大的sub方法，高效地进行匹配替换。
 
 这样就能通过修改make_rx()来实现重载。
 
+1.19 检查字符串中的结束标记
+---------------------------
+给出一个字符串s，检查s中是否存在多个结束标记中的一个。
+
+    import itertools
+    def anyTrue(predicate, sequence):
+        return True in itertools.imap(predicate, sequence)
+    def endsWith(s, *endings):
+        return anyTrue(s.endswith, endings)
+
+imap和map不同的是，imap返回的是一个iteration对象，而map返回的是一个list对象。  
+imap等价于：
+
+    def imap(function, *iterables):
+         iterables = map(iter, iterables)
+         while True:
+             args = [i.next() for i in iterables]
+             if function is None:
+                 yield tuple(args)
+             else:
+                 yield function(args) #args应为*args
+
+典型应用：打印当前目录所有的图片文件  
+
+    import os
+    for filename in os.listdir('.'):
+        if endsWith(filename, '.jpg', '.jpeg', '.gif'):
+            print filename
+
+1.20 使用Unicode来处理国际化文本
+-------------------------------
+任务：处理包含了非ASCII字符的文本字符串。  
+使用python提供的内置unicode类型，可以轻松转换：`german_ae = unicode('\xc3\xa4', 'utf-8')`  
+unicode字符串和ascii字符串的操作会产生unicode字符串：`sentence = "this is a" + german_ae`  
+
+unicode字符串和未声明编码的字节串的操作，python会拒绝猜测其编码，直接给出UnicodeDecodeError.  
+所以当需要处理“外部”的文本数据时，应当先创建一个unicode对象，找出最合适的编码再转换。  
+
+
+1.21 在Unicode和普通字符串之间转换
+----------------------------------
+使用encode和decode：
+
+    unicodestring = u"hello world"
+    # unicode转化成普通字符串
+    utf8string = unicodestring.encode("utf-8")
+    asciistring = unicodestring.encode("ascii")
+    # 转换成unicode
+    plainstring1 = unicode(utf8string, "utf-8")
+    plainstring2 = unicode(asciistring, "ascii")
+
+除了"utf-8"和"ascii"，还有很多编码，可以用作encode和decode的参数。关于unicode的内容还有很多。
+
+1.22 在标准输出中打印unicode字符
+-------------------------------
+在IDLE中，python可能知道输出的信息是什么编码，但是在终端中，python默认使用utf-8编码，所以输出的内容可能不是想要的。  
+例如上上小节中的u'\xc3\xa4'，是德文字母，如果直接输出是：Ã¤。但是通过python标准库的codecs模块，使终端使用"latin-1"来显示，则变成ä  
+
+    import codecs, sys
+    sys.stdout = codecs.lookup("latin-1")[-1](sys.stdout)
+
+
