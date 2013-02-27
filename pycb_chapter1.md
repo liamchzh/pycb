@@ -446,4 +446,45 @@ unicode字符串和未声明编码的字节串的操作，python会拒绝猜测�
     import codecs, sys
     sys.stdout = codecs.lookup("latin-1")[-1](sys.stdout)
 
+1.23 对Unicode数据编码并用于XML和HTML
+------------------------------------
+python提供了一种编码错误处理工具，叫做xmlcharrefreplace，它会将所有不属于所选编码的字符用XML的数字字符引用来代替：
+
+    def encode_for_xml(unicode_data, encoding='ascii'):
+        return unicode_data.encode(encoding, 'xmlcharrefreplace')
+
+也可以将此法用于HTML，如果更喜欢HTML的符号实体引用，需要自定义一个编码错误处理函数。
+
+    import codecs
+    from htmlentitydefs import codepoint2name
+    def html_replace(exc):
+        if isinstance(exc, (UnicodeEncodeError, UnicodeTranslateError)):
+            s = [u'&%s;' % codepoint2name[ord(c)]
+                    for c in exc.object[exc.start:exc.end]]
+            return ''.join(s), exc.end
+        else:
+            raise TypeError("can't handle %s" % exc.__name__)
+    codecs.register_error('html_replace', html_replace)
+
+    def encode_for_html(unicode_data, encoding='ascii'):
+        return unicode_data.encode(encoding, 'html_replace')
+
+1.24 让某些字符串大小写不敏感
+----------------------------
+让某些字符串在比较和查询的时候是大小写不敏感的，解决方法是，将这种字符串封装在str的一个合适子类中：
+
+    class iStr(str):
+        def __init__(self, *args):
+            self._lowered = str.lower(self)
+        def __repr__(self):
+            return '%s(%s)' % (type(self).__name__, str.__repr__(self))
+        def __hash__(self):
+            return hash(self._lowered)
+        def lower(self):
+            return self._lowered
+
+1.25 将HTML文档转化为文本显示到UNIX终端上
+-----------------------------------------
+最简单的方法是写一个过滤的脚本，从标准输入接受HTML，将输出文本和终端控制序列打印到标准的输出上。  
+代码略。  
 
