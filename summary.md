@@ -89,4 +89,52 @@ sys.argv是用来获取命令行参数的，它是一个列表。sys.argv[0]是�
 os.walk()是标准库模块os中的生成器，它返回一个三元的tuple(dirpath, dirnames, filenames),分别表示起始路径，文件夹名和文件名。  
 方法定义：`os.walk(top, topdown=True, onerror=None, followlinks=False)`  
 
+第三章 时间和财务计算
+---------------------
+###[datetime模块](http://docs.python.org/2/library/datetime.html#available-types)
+包含几个类：
 
+* datetime.date
+* datetime.time
+* datetime.datetime
+* datetime.datedelta
+* datetime.tzinfo
+
+###[datedelta对象](http://docs.python.org/2/library/datetime.html#timedelta-objects)
+定义：class datetime.timedelta([days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks]]]]]]])
+All arguments are optional and default to 0. Arguments may be ints, longs, or floats, and may be positive or negative.
+
+有如下转换：
+
+* A millisecond is converted to 1000 microseconds.
+* A minute is converted to 60 seconds.
+* An hour is converted to 3600 seconds.
+* A week is converted to 7 days.
+
+所以必须满足：
+
+* 0 <= microseconds < 1000000
+* 0 <= seconds < 3600*24
+* -999999999 <= days <= 999999999
+
+###datetime.date对象
+一个很重要的方法就是today()
+
+    import datetime
+    print datetime.date.today()
+    #output:datetime.date(2013, 3, 11)
+
+操作：
+
+* date2 = date1 + timedelta	
+* date2 = date1 - timedelta	
+* timedelta = date1 - date2
+* date1 < date2
+
+###datetime.datetime对象
+它也有一个方法：today()。但是相比date，它的today方法还会输出具体时间(time)。
+
+    print datetime.datetime.today()
+    #output: datetime.datetime(2013, 3, 11, 15, 14, 37, 452605)
+
+    
