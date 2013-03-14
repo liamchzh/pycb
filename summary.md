@@ -164,3 +164,29 @@ All arguments are optional and default to 0. Arguments may be ints, longs, or fl
 * items()/iteritems():返回包含(key, value)的列表。
 * pop(key[,default]):类似于get(),只是返回后删除掉d[key].
 
+###copy和deepcopy的区别
+The difference between shallow and deep copying is only relevant for compound objects.简单来说，就是copy是浅拷贝，只会整个复合对象，其子对象仍然使用引用。
+
+    import copy
+    a = [1,2,3,[4,5,6,[7,8,9]]]
+    b = copy.copy(a)
+    print a
+    [1, 2, 3, [4, 5, 6, [7, 8, 9]]]
+    print b
+    [1, 2, 3, [4, 5, 6, [7, 8, 9]]]
+    b[0] = 10
+    print b
+    [10, 2, 3, [4, 5, 6, [7, 8, 9]]]
+    print a
+    [1, 2, 3, [4, 5, 6, [7, 8, 9]]]  # a没有变化
+    b[3][0] = 11
+    print b
+    [10, 2, 3, [11, 5, 6, [7, 8, 9]]]
+    print a
+    [1, 2, 3, [11, 5, 6, [7, 8, 9]]]  # a有变化
+
+上述例子中，b[0]不是复合对象，所以a[0]不会改变。但是b[3][0]仍然指向a[3][0]，所以会改变。
+
+###isinstance()
+是一个判断对象类型的函数。  
+isinstance(object, class-or-type-or-tuple) -> bool,即其第一个参数为对象，第二个为类型名或类型名的一个列表。其返回值为布尔型。
