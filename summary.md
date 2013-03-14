@@ -138,3 +138,29 @@ All arguments are optional and default to 0. Arguments may be ints, longs, or fl
     #output: datetime.datetime(2013, 3, 11, 15, 14, 37, 452605)
 
     
+第四章 Python技巧
+-----------------
+###[字典dict](http://docs.python.org/2/library/stdtypes.html#mapping-types-dict)
+定义字典方法如下：
+
+    a = dict(one=1, two=2, three=3)
+    b = {'one': 1, 'two': 2, 'three': 3}
+    c = dict(zip(['one', 'two', 'three'], [1, 2, 3]))
+    d = dict([('two', 2), ('one', 1), ('three', 3)])
+    e = dict({'three': 3, 'one': 1, 'two': 2})
+    a == b == c == d == e
+    #output:True
+
+字典具有的一些方法：
+
+* len(d)
+* d[key]
+* d[kye] = value
+* del d[key]
+* key (not)in d
+* iter(d):Return an iterator over the keys of the dictionary. 
+* get(key[,default]):如果key存在，返回d[key]，否则返回default.如果default为None,则引发KeyError.
+* has_key(key)
+* items()/iteritems():返回包含(key, value)的列表。
+* pop(key[,default]):类似于get(),只是返回后删除掉d[key].
+
