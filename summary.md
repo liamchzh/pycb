@@ -190,3 +190,10 @@ The difference between shallow and deep copying is only relevant for compound ob
 ###isinstance()
 是一个判断对象类型的函数。  
 isinstance(object, class-or-type-or-tuple) -> bool,即其第一个参数为对象，第二个为类型名或类型名的一个列表。其返回值为布尔型。
+
+第5章 搜索和排序
+---------------
+###cmp()方法
+###sort()方法
+###sorted()的key
+key=string.lower，也可以使用key=lambda s:s.lower()
