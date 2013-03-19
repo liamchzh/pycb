@@ -191,9 +191,98 @@ The difference between shallow and deep copying is only relevant for compound ob
 是一个判断对象类型的函数。  
 isinstance(object, class-or-type-or-tuple) -> bool,即其第一个参数为对象，第二个为类型名或类型名的一个列表。其返回值为布尔型。
 
+###*args和**kwds语法
+它们是用来传递参数的，星号后面跟的都是标识符，可以是任意的。  
+两者有何不同，看看例子就会明白：
+example-1:
+
+    def test_var_args(farg, *args):
+        print "formal arg:", farg
+        for arg in args:
+            print "another arg:", arg
+    test_var_args(1, "two", 3)
+    #output:
+    formal arg: 1
+    another arg: two
+    another arg: 3
+
+example-2:
+
+    def test_var_kwargs(farg, **kwargs):
+    print "formal arg:", farg
+    for key in kwargs:
+        print "another keyword arg: %s: %s" % (key, kwargs[key])
+    test_var_kwargs(farg=1, myarg2="two", myarg3=3)
+    #output:
+    formal arg: 1
+    another keyword arg: myarg2: two
+    another keyword arg: myarg3: 3
+
+
 第5章 搜索和排序
 ---------------
-###cmp()方法
+###[内建cmp函数](http://docs.python.org/2/library/functions.html#cmp)
+返回结果：
+
+* -1,if x < y
+* 0, if x == y
+* 1, if x > y
+
 ###sort()方法
-###sorted()的key
-key=string.lower，也可以使用key=lambda s:s.lower()
+函数原型：`L.sort(cmp=None, key=None, reverse=False)`  
+参数说明：
+
+* cmp的作用是说明怎么比较大小
+* key接受函数返回值，用来排序
+* 表示是否逆序
+
+key=string.lower，也可以使用key=lambda s:s.lower()  
+例子：  
+按照元素长度排序
+
+    L = [{1:5,3:4},{1:3,6:3},{1:1,2:4,5:6},{1:9}]
+    def f(x):
+        return len(x)
+    sort(key=f)
+    print L
+    #output:
+    [{1: 9}, {1: 5, 3: 4}, {1: 3, 6: 3}, {1: 1, 2: 4, 5: 6}]
+
+按照每个字典元素里面key为1的元素的值排序
+
+    L = [{1:5,3:4},{1:3,6:3},{1:1,2:4,5:6},{1:9}]
+    def f2(a,b):
+        return a[1]-b[1]
+    L.sort(cmp=f2)
+    print L
+    #output:
+    [{1: 1, 2: 4, 5: 6}, {1: 3, 6: 3}, {1: 5, 3: 4}, {1: 9}]
+
+###sorted()
+函数定义：`sorted(data, cmp=None, key=None, reverse=False)`  
+sorted跟sort的唯一不同是sort会返回排好序的副本。
+
+###fromkeys()
+作用是生成字典，函数定义：`dict.fromkeys(seq[, values])`  
+
+* seq:用作字典键值的列表
+* optional,如果有，则是对应键的值。
+
+示例：
+
+    seq = ('name', 'age', 'sex')
+    dict = dict.fromkeys(seq)
+    print "New Dictionary : %s" %  str(dict)
+    #output: New Dictionary : {'age': None, 'name': None, 'sex': None}
+    dict = dict.fromkeys(seq, 10)
+    print "New Dictionary : %s" %  str(dict)
+    #output: New Dictionary : {'age': 10, 'name': 10, 'sex': 10}
+
+###判断字典是有有某个键值
+
+* key in d
+* key in d.keys()
+* d.has_key(key)
+
+另外，d.items()会返回包含(key, values)的列表。  
+
