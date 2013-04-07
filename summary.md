@@ -189,7 +189,8 @@ The difference between shallow and deep copying is only relevant for compound ob
 
 ###isinstance()
 是一个判断对象类型的函数。  
-isinstance(object, class-or-type-or-tuple) -> bool,即其第一个参数为对象，第二个为类型名或类型名的一个列表。其返回值为布尔型。
+isinstance(object, class-or-type-or-tuple) -> bool,即其第一个参数为对象，第二个为类型名或类型名的一个列表。其返回值为布尔型。  
+例如：`isinstance('who are you', basestring)`
 
 ###*args和**kwds语法
 它们是用来传递参数的，星号后面跟的都是标识符，可以是任意的。  
